@@ -89,8 +89,8 @@
                     </div>
                 </div>
 
-                <div class="col-auto">
-                    Put content here.
+                <div class="p-4">
+                    <?= $content ?? '' ?>
                 </div>
             </div>
         </div>
