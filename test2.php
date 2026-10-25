@@ -1,3 +1,5 @@
+// layout code not using php
+
 <!DOCTYPE html>
 <html lang="en">
 
