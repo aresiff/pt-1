@@ -4,7 +4,7 @@ ob_start();
 
 <main class="home-page">
     <section class="home-hero mb-5" aria-label="StrumForge welcome carousel">
-        <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="6500">
+        <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="10000">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Welcome"></button>
                 <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1" aria-label="Product management"></button>
