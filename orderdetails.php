@@ -33,6 +33,25 @@ ob_start();
                         <option value="P001">Squier Affinity Stratocaster Player Pack (Stock = 10)</option>
                         <option value="P002">Ibanez Gio Series IJRX20U-BL Jumpstart Electric Guitar Starter Pack (Stock = 5)</option>
                         <option value="P003">Epiphone Les Paul Player Pack (Stock = 3)</option>
+                        <option value="P004">Yamaha Pacifica Electric Guitar Starter Pack (Stock = 5)</option>
+                        <option value="P005">Squier Sonic Stratocaster Pack - Sunburst (Stock = 2)</option>
+                        <option value="P006">Ibanez GIO RX40BKN Electric Guitar Starter Pack - Black (Stock = 6)</option>
+                        <option value="P007">Ibanez GIO RX40CA Electric Guitar Starter Pack - Red (Stock = 7)</option>
+                        <option value="P008">Encore EBP-E99CSB Cherry Sunburst Starter Pack (Stock = 8)</option>
+                        <option value="P009">Ibanez GIO RX40MLB Electric Guitar Starter Pack - Metallic Light Blue (Stock = 9)</option>
+                        <option value="P010">Epiphone Les Paul Special E1 Starter Pack - Worn Ebony (Stock = 9)</option>
+                        <option value="P011">Antiquity ST Guitar & Amp Beginner Pack - White (Stock = 4)</option>
+                        <option value="P012">Vintage V10 Coaster Electric Guitar Starter Pack - Cherry Sunburst (Stock = 3)</option>
+                        <option value="P013">Encore E6 Electric Guitar Outfit - Wine Red (Stock = 5)</option>
+                        <option value="P014">VISIONSTRING Electric Guitar Pack - Sunburst (Stock = 2)</option>
+                        <option value="P015">Yamaha GigMaker EG112 Electric Guitar Package (Stock = 1)</option>
+                        <option value="P016">Donner DST-152S HSS Electric Guitar Kit (Stock = 2)</option>
+                        <option value="P017">Harley Benton ST-20HSS Standard Bundle (Stock = 3)</option>
+                        <option value="P018">Jackson JS Series Dinky Beginner Bundle (Stock = 2)</option>
+                        <option value="P019">Rogue Rocketeer Electric Guitar Pack (Stock = 1)</option>
+                        <option value="P020">Cort CR50 Electric Guitar Starter Pack (Stock = 2)</option>
+                        
+                        
                     </select>
                 </div>
                 <div class="col-md-4">
