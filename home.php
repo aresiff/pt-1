@@ -1,4 +1,12 @@
 <?php
+$carouselSoundFiles = glob(__DIR__ . DIRECTORY_SEPARATOR . '10secsong' . DIRECTORY_SEPARATOR . '*.mp3');
+if ($carouselSoundFiles === false) {
+    throw new RuntimeException('Unable to read carousel audio files from the 10secsong folder.');
+}
+$carouselSoundSources = array_map(static function ($file) {
+    return '10secsong/' . rawurlencode(basename($file));
+}, $carouselSoundFiles);
+
 ob_start();
 ?>
 
@@ -39,7 +47,12 @@ ob_start();
                                 <span class="home-eyebrow"><i class="bi bi-box-seam me-2"></i>Find your next favorite</span>
                                 <h2 class="display-5 fw-bold mt-3 mb-3">Keep your collection in tune.</h2>
                                 <p class="lead mb-4">Stay on top of the instruments and gear that keep every performance going.</p>
-                                <a href="products.php" class="btn btn-light btn-lg fw-semibold">Go to products <i class="bi bi-arrow-right ms-2"></i></a>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="products.php" class="btn btn-light btn-lg fw-semibold">Go to products <i class="bi bi-arrow-right ms-2"></i></a>
+                                    <button id="homeCarouselSoundToggle" type="button" class="btn btn-outline-light btn-lg" aria-pressed="true">
+                                        <i class="bi bi-volume-up me-2" aria-hidden="true"></i><span>Mute sound</span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="col-lg-4 text-center">
                                 <div class="home-feature-icon"><i class="bi bi-music-note-list"></i></div>
@@ -74,6 +87,7 @@ ob_start();
             </button>
         </div>
     </section>
+    <audio id="homeCarouselAudio" preload="none"></audio>
 
     <section aria-labelledby="workspace-heading">
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
@@ -115,6 +129,96 @@ ob_start();
         </div>
     </section>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const carousel = document.getElementById('homeCarousel');
+        const audio = document.getElementById('homeCarouselAudio');
+        const soundToggle = document.getElementById('homeCarouselSoundToggle');
+        const soundSources = <?= json_encode($carouselSoundSources, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+        let soundEnabled = true;
+        let stopTimer;
+        let playbackId = 0;
+        let previousSoundSource;
+
+        function updateSoundToggle() {
+            soundToggle.setAttribute('aria-pressed', String(soundEnabled));
+            soundToggle.querySelector('i').className = soundEnabled
+                ? 'bi bi-volume-up me-2'
+                : 'bi bi-volume-mute me-2';
+            soundToggle.querySelector('span').textContent = soundEnabled
+                ? 'Mute sound'
+                : 'Enable sound';
+        }
+
+        function stopSound() {
+            playbackId++;
+            window.clearTimeout(stopTimer);
+            audio.pause();
+            if (audio.currentSrc) {
+                audio.currentTime = 0;
+            }
+        }
+
+        function playRandomSound() {
+            if (!soundEnabled) {
+                return;
+            }
+
+            if (soundSources.length === 0) {
+                console.error('No MP3 files were found in the 10secsong folder.');
+                return;
+            }
+
+            stopSound();
+            const currentPlaybackId = playbackId;
+            const availableSources = soundSources.length > 1
+                ? soundSources.filter(function (source) {
+                    return source !== previousSoundSource;
+                })
+                : soundSources;
+            const selectedSource = availableSources[Math.floor(Math.random() * availableSources.length)];
+            previousSoundSource = selectedSource;
+            audio.src = selectedSource;
+            const playback = audio.play();
+
+            if (playback) {
+                playback.then(function () {
+                    if (currentPlaybackId !== playbackId) {
+                        audio.pause();
+                        return;
+                    }
+                    stopTimer = window.setTimeout(stopSound, 10000);
+                }).catch(function (error) {
+                    if (error.name === 'NotAllowedError') {
+                        soundEnabled = false;
+                        updateSoundToggle();
+                    } else {
+                        console.error('Unable to play the carousel sound.', error);
+                    }
+                });
+            }
+        }
+
+        carousel.addEventListener('slide.bs.carousel', stopSound);
+        carousel.addEventListener('slid.bs.carousel', function (event) {
+            if (event.relatedTarget.querySelector('.home-hero-panel--products')) {
+                playRandomSound();
+            }
+        });
+
+        soundToggle.addEventListener('click', function () {
+            soundEnabled = !soundEnabled;
+            updateSoundToggle();
+
+            if (soundEnabled) {
+                playRandomSound();
+            } else {
+                stopSound();
+            }
+        });
+    });
+</script>
 
 <style>
     .home-page {
@@ -158,6 +262,26 @@ ob_start();
     .home-hero-panel--welcome { background: linear-gradient(120deg, #17223b 0%, #293f68 58%, #4c537e 100%); }
     .home-hero-panel--products { background: linear-gradient(120deg, #163c45 0%, #176b68 58%, #3a8c82 100%); }
     .home-hero-panel--orders { background: linear-gradient(120deg, #40284c 0%, #703d64 58%, #a15163 100%); }
+
+    #homeCarousel .carousel-control-prev,
+    #homeCarousel .carousel-control-next {
+        top: 50%;
+        bottom: auto;
+        width: 3rem;
+        height: 3rem;
+        transform: translateY(-50%);
+        opacity: .9;
+    }
+
+    #homeCarousel .carousel-control-prev { left: .5rem; }
+    #homeCarousel .carousel-control-next { right: .5rem; }
+
+    #homeCarousel .carousel-control-prev:hover,
+    #homeCarousel .carousel-control-next:hover,
+    #homeCarousel .carousel-control-prev:focus-visible,
+    #homeCarousel .carousel-control-next:focus-visible {
+        opacity: 1;
+    }
 
     .home-hero-panel .row,
     .home-hero-panel .home-eyebrow,
@@ -334,6 +458,18 @@ ob_start();
         .home-hero-panel { min-height: 500px; padding: 2rem 1.5rem 3.5rem; }
         .home-hero-panel .display-5 { font-size: 2.2rem; }
         .home-logo-wrap { width: 165px; }
+        #homeCarousel .carousel-control-prev,
+        #homeCarousel .carousel-control-next {
+            top: auto;
+            bottom: .25rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            transform: none;
+        }
+
+        #homeCarousel .carousel-control-prev { left: .75rem; }
+        #homeCarousel .carousel-control-next { right: .75rem; }
+
         .home-hero-panel--products .home-feature-icon,
         .home-hero-panel--orders .home-feature-icon {
             width: 120px;
